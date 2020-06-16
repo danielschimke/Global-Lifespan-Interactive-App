@@ -14,6 +14,10 @@ ui <- dashboardPage(
     dashboardBody(
       tabItems(
         tabItem(tabName = "life",
+
+          checkboxGroupInput("updateLifeChart", label = "Filter by Country:",
+                             choices = unique(lifeData$Entity),
+                             selected = NULL, inline = TRUE),
           plotOutput("lifeChart")        
         )
       )
