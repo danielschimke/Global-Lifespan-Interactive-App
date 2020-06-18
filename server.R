@@ -39,4 +39,11 @@ server <- function(input, output) {
     }
     
   })
+  
+  #Creates a heatmap with the data
+  output$heatmap <- renderPlot({
+    ggplot(newLifeData(), aes(Entity, Year)) + 
+           geom_tile(aes(fill = lifeExpectancy), color = "white") + 
+           scale_fill_gradient(low = "white", high = "steelblue")
+  })
 }

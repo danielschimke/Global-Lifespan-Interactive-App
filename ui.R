@@ -27,7 +27,8 @@ ui <- dashboardPage(
           checkboxGroupInput("updateLifeChart", label = "Filter by Country:",
                              choices = unique(lifeData$Entity),
                              selected = NULL, inline = TRUE),
-          plotOutput("lifeChart")        
+          plotOutput("lifeChart"),
+          plotOutput("heatmap")
         ),
         tabItem(tabName = "newEntry",
           h3("Add a new entry to the database"),
