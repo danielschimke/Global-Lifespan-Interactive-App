@@ -23,6 +23,25 @@ output:
 
 ```{r setup-vars, include=FALSE}
 library(tidyverse)
+library(DBI)
+library(RCurl)
 
 
+newData <- "data.db"
+con <- dbConnect(drv = RSQLite::SQLite(), dbname = newData)
+dbListTables(con)
+
+
+LEdata <- read_csv('life-expectancy.csv')
+CMdata <- read.csv('child-mortality-igme.csv')
+
+totalData <- merge.data.frame(LEdata, CMdata, by=c("Entity", "Year", "Code"), all=TRUE)
+totalData <- rename(totalData, c("childMortality" = "Child.mortality....",
+                                 "lifeExpectancy" = "Life expectancy (years)"))
+
+dbWriteTable(con, "Merged Table", totalData, overwrite = TRUE)
+
+dataRead <- dbReadTable(con, "Merged Table")
+
+dbDisconnect(con)
 ```
