@@ -15,9 +15,14 @@ dataAccess <- "data.db"
 ui <- dashboardPage(
     dashboardHeader(title = "Fun with databases"),
     dashboardSidebar(
-      sidebarMenu(
+      sidebarMenu(id = "sidebar",
         menuItem("Life Expectancy", tabName = "life", icon = icon("heartbeat")),
-        menuItem("Add Entry", tabName = "newEntry", icon = icon("file"))
+        menuItem("Add Entry", tabName = "newEntry", icon = icon("file")),
+        conditionalPanel(
+          condition = "input.sidebar == 'life'",
+          selectInput("changeX", label = "X Axis:", choices = colnames(lifeData)),
+          selectInput("changeY", label = "Y Axis:", choices = colnames(lifeData))
+        )
       )
     ),
     dashboardBody(
@@ -27,8 +32,11 @@ ui <- dashboardPage(
           checkboxGroupInput("updateLifeChart", label = "Filter by Country:",
                              choices = unique(lifeData$Entity),
                              selected = NULL, inline = TRUE),
+          plotOutput("inputGraph"),
+          plotOutput("GDPvLifeExpectancy"),
           plotOutput("lifeChart"),
-          plotOutput("heatmap")
+          plotOutput("heatmap"),
+          plotOutput("suicideVchildMortality")
         ),
         tabItem(tabName = "newEntry",
           h3("Add a new entry to the database"),

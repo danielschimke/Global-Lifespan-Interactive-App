@@ -22,6 +22,19 @@ server <- function(input, output) {
     ggplot(newLifeData()) +
       geom_line(aes(x=Year, y=lifeExpectancy, color=Entity))
   })
+  output$suicideVchildMortality <- renderPlot({
+    ggplot(newLifeData()) +
+      geom_line(aes(x=suicideRatePer100000, y=childMortality, color=Entity))
+  })
+  output$GDPvLifeExpectancy <- renderPlot({
+    ggplot(newLifeData()) +
+      geom_line(aes(x=GDPperCapita, y=lifeExpectancy, color=Entity))
+  })
+  output$inputGraph <- renderPlot({
+    ggplot(newLifeData()) +
+      geom_line(aes(x=newLifeData()[[input$changeX]], y=newLifeData()[[input$changeY]], color=Entity)) +
+      xlab(input$changeX) + ylab(input$changeY)
+  })
   
   #Update the database with a new entry
   observeEvent(input$submitNewEntry, {

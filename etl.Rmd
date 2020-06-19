@@ -34,10 +34,22 @@ dbListTables(con)
 
 LEdata <- read_csv('life-expectancy.csv')
 CMdata <- read.csv('child-mortality-igme.csv')
+Sdata <- read.csv('suicide-rate.csv')
+GDPdata <- read.csv('gdp-per-capita-worldbank.csv')
+Hdata <- read.csv('happiness-cantril-ladder.csv')
+Bdata <- read.csv('banana-yields.csv')
 
 totalData <- merge.data.frame(LEdata, CMdata, by=c("Entity", "Year", "Code"), all=TRUE)
+totalData <- merge.data.frame(totalData, Sdata, by=c("Entity", "Year", "Code"), all=TRUE)
+totalData <- merge.data.frame(totalData, GDPdata, by=c("Entity", "Year", "Code"), all=TRUE)
+totalData <- merge.data.frame(totalData, Hdata, by=c("Entity", "Year", "Code"), all=TRUE)
+totalData <- merge.data.frame(totalData, Bdata, by=c("Entity", "Year", "Code"), all=TRUE)
 totalData <- rename(totalData, c("childMortality" = "Child.mortality....",
-                                 "lifeExpectancy" = "Life expectancy (years)"))
+                    "lifeExpectancy" = "Life expectancy (years)",
+                    "suicideRatePer100000" = "X..per.100.000.population.",
+                    "GDPperCapita" = "GDP.per.capita..int......constant.2011.international...",
+                    "Happiness" = "World.Happiness.Report.2016..Cantril.Ladder..0.worst..10.best..",
+                    "bananaYields" = "Crops...Bananas...486...Yield...5419...hg.ha..tonnes.per.hectares.")) 
 
 dbWriteTable(con, "Merged Table", totalData, overwrite = TRUE)
 
