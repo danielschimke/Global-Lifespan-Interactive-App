@@ -9,7 +9,7 @@ library(DBI)
 
 dataAccess <- "data.db"
   con <- dbConnect(drv = RSQLite::SQLite(), dbname = dataAccess)
-  lifeData <- dbReadTable(con, "Merged Table")
+  lifeData <- dbReadTable(con, "mergedTable")
   dbDisconnect(con)
   
 ui <- dashboardPage(

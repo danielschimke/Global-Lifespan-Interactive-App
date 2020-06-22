@@ -10,12 +10,12 @@ server <- function(input, output) {
 #  lifeData <- data.frame(read.csv("life-expectancy.csv"))
   dataAccess <- "data.db"
   con <- dbConnect(drv = RSQLite::SQLite(), dbname = dataAccess)
-  lifeData <- dbReadTable(con, "Merged Table")
-  dbDisconnect(con)
+  lifeData <- dbReadTable(con, "mergedTable")
   
   #Display simple life expectancy data
   newLifeData <- reactive({
     req(input$updateLifeChart)
+    lifeData <- dbReadTable(con, "mergedTable")
     lifeData %>% filter(Entity %in% input$updateLifeChart)
   })
   output$lifeChart <- renderPlot({
@@ -35,20 +35,31 @@ server <- function(input, output) {
       geom_line(aes(x=newLifeData()[[input$changeX]], y=newLifeData()[[input$changeY]], color=Entity)) +
       xlab(input$changeX) + ylab(input$changeY)
   })
-  
+
   #Update the database with a new entry
   observeEvent(input$submitNewEntry, {
-    if(as.numeric(input$newExpectancy) >= 0 && as.numeric(input$newExpectancy) <= 124){
-      output$submitMessage <- renderText({"Submission added"})
-      lifeData <- add_row(lifeData, Entity = input$newEntity, Year = as.numeric(input$newYear), Code = input$newCode,
-              lifeExpectancy = as.numeric(input$newExpectancy), childMortality = as.numeric(input$newChildMortality))
-      
-      dataUpdate <- "data.db"
-      con <- dbConnect(drv = RSQLite::SQLite(), dbname = dataUpdate)
-      dbWriteTable(con, "Merged Table", lifeData, overwrite = TRUE)
-      dbDisconnect(con)
+    if(!is.na(as.numeric(input$newExpectancy)) && !is.na(as.numeric(input$newChildMortality))){
+      if(as.numeric(input$newExpectancy) >= 0 && as.numeric(input$newExpectancy) <= 124){
+        if(as.numeric(input$newChildMortality) >= 0 && as.numeric(input$newChildMortality) <= 100){
+          if(!is.na(as.numeric(input$newYear))){
+            output$submitMessage <- renderText({"Submission added"})
+            lifeData <- add_row(lifeData, Entity = input$newEntity, Year = as.numeric(input$newYear), Code = input$newCode,
+                              lifeExpectancy = as.numeric(input$newExpectancy), childMortality = as.numeric(input$newChildMortality))
+          
+            dataUpdate <- "data.db"
+            con <- dbConnect(drv = RSQLite::SQLite(), dbname = dataUpdate)
+            dbWriteTable(con, "mergedTable", lifeData, overwrite = TRUE)
+          }else{
+            output$submitMessage <- renderText({"Error: Year must be a number"})
+          }
+        }else{
+          output$submitMessage <- renderText({"Error: Enter a valid child mortality (0-100)"})
+        }
+      }else{
+        output$submitMessage <- renderText({"Error: Enter a valid life expectancy (0-124)"})
+      }
     }else{
-      output$submitMessage <- renderText({"Error: Enter a valid life expectancy"})
+      output$submitMessage <- renderText({"Error: Life expectancy and child mortality must be a number"})
     }
     
   })
