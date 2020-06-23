@@ -12,6 +12,8 @@ dataAccess <- "data.db"
   lifeData <- dbReadTable(con, "mergedTable")
   dbDisconnect(con)
   
+#  df <- lifeData[grep("^A", lifeData$Entity),]
+  
 ui <- dashboardPage(
     dashboardHeader(title = "Fun with databases"),
     dashboardSidebar(
@@ -20,8 +22,13 @@ ui <- dashboardPage(
         menuItem("Add Entry", tabName = "newEntry", icon = icon("file")),
         conditionalPanel(
           condition = "input.sidebar == 'life'",
-          selectInput("changeX", label = "X Axis:", choices = colnames(lifeData)),
-          selectInput("changeY", label = "Y Axis:", choices = colnames(lifeData))
+          style = "position:fixed;width:inherit;",
+          selectInput("changeX", label = "X Axis:", 
+                      choices = colnames(lifeData[,!colnames(lifeData) %in% c("Entity","Code")]), 
+                      width = 210),
+          selectInput("changeY", label = "Y Axis:", 
+                      choices = colnames(lifeData[,!colnames(lifeData) %in% c("Entity","Code")]), 
+                      width = 210)
         )
       )
     ),
@@ -30,7 +37,7 @@ ui <- dashboardPage(
         tabItem(tabName = "life",
 
           checkboxGroupInput("updateLifeChart", label = "Filter by Country:",
-                             choices = unique(lifeData$Entity),
+                             choices = unique(lifeData[grep("^A", lifeData$Entity),]$Entity),
                              selected = NULL, inline = TRUE),
           plotOutput("inputGraph"),
           plotOutput("GDPvLifeExpectancy"),
@@ -41,7 +48,7 @@ ui <- dashboardPage(
         tabItem(tabName = "newEntry",
           h3("Add a new entry to the database"),
           selectInput("newEntity", label = "Entity:", choices = unique(lifeData$Entity)),
-          textInput("newCode", label = "Code:", placeholder = "ex. AFG"),
+          selectInput("newCode", label = "Code:", choices = NULL),
           textInput("newYear", label = "Year:", placeholder = "####"),
           textInput("newExpectancy", label = "Life Expectancy:", placeholder = "Enter a number in years..."),
           textInput("newChildMortality", label = "Child Mortality Rate:", placeholder = "Ex. 56 for 56%"),

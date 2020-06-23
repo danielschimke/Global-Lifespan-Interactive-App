@@ -5,12 +5,22 @@ library(tidyverse)
 library(ggplot2)
 
 
-server <- function(input, output) {
+server <- function(input, output, session) {
   
 #  lifeData <- data.frame(read.csv("life-expectancy.csv"))
   dataAccess <- "data.db"
   con <- dbConnect(drv = RSQLite::SQLite(), dbname = dataAccess)
   lifeData <- dbReadTable(con, "mergedTable")
+  
+  updateCode <- reactive({
+    codeData <- lifeData
+    codeData <- codeData[codeData$Entity %in% input$newEntity,]
+    updateSelectInput(session, "newCode", choices = codeData$Code, selected = codeData$Code)
+  })
+  observe({
+     updateCode()
+  })
+
   
   #Display simple life expectancy data
   newLifeData <- reactive({
@@ -18,6 +28,9 @@ server <- function(input, output) {
     lifeData <- dbReadTable(con, "mergedTable")
     lifeData %>% filter(Entity %in% input$updateLifeChart)
   })
+  
+
+  
   output$lifeChart <- renderPlot({
     ggplot(newLifeData()) +
       geom_line(aes(x=Year, y=lifeExpectancy, color=Entity))
@@ -36,12 +49,14 @@ server <- function(input, output) {
       xlab(input$changeX) + ylab(input$changeY)
   })
 
-  #Update the database with a new entry
+  #Checks for valid input to the database
   observeEvent(input$submitNewEntry, {
     if(!is.na(as.numeric(input$newExpectancy)) && !is.na(as.numeric(input$newChildMortality))){
       if(as.numeric(input$newExpectancy) >= 0 && as.numeric(input$newExpectancy) <= 124){
         if(as.numeric(input$newChildMortality) >= 0 && as.numeric(input$newChildMortality) <= 100){
           if(!is.na(as.numeric(input$newYear))){
+            
+            #Updates the database with the new entry
             output$submitMessage <- renderText({"Submission added"})
             lifeData <- add_row(lifeData, Entity = input$newEntity, Year = as.numeric(input$newYear), Code = input$newCode,
                               lifeExpectancy = as.numeric(input$newExpectancy), childMortality = as.numeric(input$newChildMortality))
@@ -59,7 +74,7 @@ server <- function(input, output) {
         output$submitMessage <- renderText({"Error: Enter a valid life expectancy (0-124)"})
       }
     }else{
-      output$submitMessage <- renderText({"Error: Life expectancy and child mortality must be a number"})
+      output$submitMessage <- renderText({"Error: Life expectancy and child mortality must be numbers"})
     }
     
   })
