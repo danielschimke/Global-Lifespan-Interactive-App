@@ -22,11 +22,14 @@ server <- function(input, output, session) {
   })
 
   
-  #Display simple life expectancy data
+  #Update the dataset based on the input
   newLifeData <- reactive({
-    req(input$updateLifeChart)
+  #  req(input$updateLifeChart)
     lifeData <- dbReadTable(con, "mergedTable")
-    lifeData %>% filter(Entity %in% input$updateLifeChart)
+    lifeData %>% filter(Entity %in% input$updateLifeChartA | Entity %in% input$updateLifeChartB |
+                        Entity %in% input$updateLifeChartC | Entity %in% input$updateLifeChartDE|
+                        Entity %in% input$updateLifeChartFG| Entity %in% input$updateLifeChartHJ|
+                        Entity %in% input$updateLifeChartKL| Entity %in% input$updateLifeChartM)
   })
   
 
