@@ -28,7 +28,8 @@ ui <- dashboardPage(
                       width = 210),
           selectInput("changeY", label = "Y Axis:", 
                       choices = colnames(lifeData[,!colnames(lifeData) %in% c("Entity","Code")]), 
-                      width = 210)
+                      width = 210),
+          actionButton("clearEntity", label = "Clear")
         )
       )
     ),
@@ -87,6 +88,30 @@ ui <- dashboardPage(
               width = 2,
               selectInput("updateLifeChartM", label = "M", multiple = TRUE,
                           choices = unique(lifeData[grep("^M", lifeData$Entity),]$Entity),
+                          selected = NULL)
+            ),
+            box(
+              width = 2,
+              selectInput("updateLifeChartNO", label = "N-O", multiple = TRUE,
+                          choices = unique(lifeData[grep("^N|^O", lifeData$Entity),]$Entity),
+                          selected = NULL)
+            ),
+            box(
+              width = 2,
+              selectInput("updateLifeChartPR", label = "P-R", multiple = TRUE,
+                          choices = unique(lifeData[grep("^P|^Q|^R", lifeData$Entity),]$Entity),
+                          selected = NULL)
+            ),
+            box(
+              width = 2,
+              selectInput("updateLifeChartS", label = "S", multiple = TRUE,
+                          choices = unique(lifeData[grep("^S", lifeData$Entity),]$Entity),
+                          selected = NULL)
+            ),
+            box(
+              width = 2,
+              selectInput("updateLifeChartTZ", label = "T-Z", multiple = TRUE,
+                          choices = unique(lifeData[grep("^T|^U|^V|^W|^X|^Y|^Z", lifeData$Entity),]$Entity),
                           selected = NULL)
             ),
           ),
