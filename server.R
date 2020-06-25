@@ -55,21 +55,31 @@ server <- function(input, output, session) {
   
   output$lifeChart <- renderPlot({
     ggplot(newLifeData()) +
-      geom_line(aes(x=Year, y=lifeExpectancy, color=Entity))
+      geom_line(aes(x=Year, y=lifeExpectancy, color=Entity), size = 1.5) +
+      theme_classic(base_size = 15) + ggtitle("Year vs Life Expectancy") +
+      theme(plot.title = element_text(hjust = 0.5), text = element_text(size = 20)) +
+      ylab(names(axisSelect)[match("lifeExpectancy", axisSelect)])
   })
-  output$suicideVchildMortality <- renderPlot({
-    ggplot(newLifeData()) +
-      geom_line(aes(x=suicideRatePer100000, y=childMortality, color=Entity))
-  })
-  output$GDPvLifeExpectancy <- renderPlot({
-    ggplot(newLifeData()) +
-      geom_line(aes(x=gdpPerCapita, y=lifeExpectancy, color=Entity))
-  })
+
   output$inputGraph <- renderPlot({
     ggplot(newLifeData()) +
-      geom_line(aes(x=newLifeData()[[input$changeX]], y=newLifeData()[[input$changeY]], color=Entity)) +
+      geom_line(aes(x=newLifeData()[[input$changeX]], y=newLifeData()[[input$changeY]], color=Entity), size = 1.5) +
       xlab(names(axisSelect)[match(input$changeX, axisSelect)]) +
-      ylab(names(axisSelect)[match(input$changeY, axisSelect)])
+      ylab(names(axisSelect)[match(input$changeY, axisSelect)]) +
+      theme_classic(base_size = 15) + ggtitle(paste(names(axisSelect)[match(input$changeX, axisSelect)], 
+                                      names(axisSelect)[match(input$changeY, axisSelect)], sep = " vs ")) +
+      theme(plot.title = element_text(hjust = 0.5), text = element_text(size = 20))
+  })
+  
+  #Creates a heatmap with the data
+  output$heatmap <- renderPlot({
+    ggplot(newLifeData() %>% filter(Year > 1950), aes(Entity, Year)) + 
+      geom_tile(aes(fill = lifeExpectancy), color = "black") + 
+      labs(fill = "Life Expectancy") +
+      scale_fill_gradient(low = "red", high = "blue") +
+      theme_classic(base_size = 15) + ggtitle("Life Expectancy per Year by Entity") +
+      theme(plot.title = element_text(hjust = 0.5), text = element_text(size = 20),)
+            #axis.text.x = element_text(angle = 5, hjust = 0.5))
   })
 
   #Checks for valid input to the database
@@ -100,12 +110,5 @@ server <- function(input, output, session) {
       output$submitMessage <- renderText({"Error: Life expectancy and child mortality must be numbers"})
     }
     
-  })
-  
-  #Creates a heatmap with the data
-  output$heatmap <- renderPlot({
-    ggplot(newLifeData(), aes(Entity, Year)) + 
-           geom_tile(aes(fill = lifeExpectancy), color = "white") + 
-           scale_fill_gradient(low = "white", high = "steelblue")
   })
 }

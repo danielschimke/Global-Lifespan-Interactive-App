@@ -25,40 +25,47 @@ ui <- dashboardPage(
         tabItem(tabName = "life",
 
           h2("Historical Statistical Analysis"),
+          h3(""),
           h4("Filter by Country/Entity:"),
           fluidRow(
             box(
               width = 2,
+              background = "red",
               selectInput("updateLifeChartA", label = "A", multiple = TRUE,
                                choices = unique(lifeData[grep("^A", lifeData$Entity),]$Entity),
                                selected = NULL)
             ),
             box(
               width = 2,
+              background = "orange",
               selectInput("updateLifeChartB", label = "B", multiple = TRUE,
                                  choices = unique(lifeData[grep("^B", lifeData$Entity),]$Entity),
                                  selected = NULL)
             ),
             box(
               width = 2,
+              background = "yellow",
               selectInput("updateLifeChartC", label = "C", multiple = TRUE,
                                  choices = unique(lifeData[grep("^C", lifeData$Entity),]$Entity),
                                  selected = NULL)
             ),
             box(
               width = 2,
+              background = "green",
               selectInput("updateLifeChartDE", label = "D-E", multiple = TRUE,
                                  choices = unique(lifeData[grep("^D|^E", lifeData$Entity),]$Entity),
                                  selected = NULL)
             ),
             box(
               width = 2,
+              background = "blue",
               selectInput("updateLifeChartFG", label = "F-G", multiple = TRUE,
                           choices = unique(lifeData[grep("^F|^G", lifeData$Entity),]$Entity),
                           selected = NULL)
             ),
             box(
               width = 2,
+              background = "purple",
               selectInput("updateLifeChartHJ", label = "H-J", multiple = TRUE,
                           choices = unique(lifeData[grep("^H|^I|^J", lifeData$Entity),]$Entity),
                           selected = NULL)
@@ -67,36 +74,42 @@ ui <- dashboardPage(
           fluidRow(
             box(
               width = 2,
+              background = "purple",
               selectInput("updateLifeChartKL", label = "K-L", multiple = TRUE,
                           choices = unique(lifeData[grep("^K|^L", lifeData$Entity),]$Entity),
                           selected = NULL)
             ),
             box(
               width = 2,
+              background = "blue",
               selectInput("updateLifeChartM", label = "M", multiple = TRUE,
                           choices = unique(lifeData[grep("^M", lifeData$Entity),]$Entity),
                           selected = NULL)
             ),
             box(
               width = 2,
+              background = "green",
               selectInput("updateLifeChartNO", label = "N-O", multiple = TRUE,
                           choices = unique(lifeData[grep("^N|^O", lifeData$Entity),]$Entity),
                           selected = NULL)
             ),
             box(
               width = 2,
+              background = "yellow",
               selectInput("updateLifeChartPR", label = "P-R", multiple = TRUE,
                           choices = unique(lifeData[grep("^P|^Q|^R", lifeData$Entity),]$Entity),
                           selected = NULL)
             ),
             box(
               width = 2,
+              background = "orange",
               selectInput("updateLifeChartS", label = "S", multiple = TRUE,
                           choices = unique(lifeData[grep("^S", lifeData$Entity),]$Entity),
                           selected = NULL)
             ),
             box(
               width = 2,
+              background = "red",
               selectInput("updateLifeChartTZ", label = "T-Z", multiple = TRUE,
                           choices = unique(lifeData[grep("^T|^U|^V|^W|^X|^Y|^Z", lifeData$Entity),]$Entity),
                           selected = NULL)
@@ -104,10 +117,10 @@ ui <- dashboardPage(
           ),
 
           plotOutput("inputGraph"),
-          plotOutput("GDPvLifeExpectancy"),
+          h3(""),
           plotOutput("lifeChart"),
+          h3(""),
           plotOutput("heatmap"),
-          plotOutput("suicideVchildMortality")
           
         ),
         tabItem(tabName = "newEntry",
@@ -118,7 +131,7 @@ ui <- dashboardPage(
           textInput("newExpectancy", label = "Life Expectancy:", placeholder = "Enter a number in years..."),
           textInput("newChildMortality", label = "Child Mortality Rate:", placeholder = "Ex. 56 for 56%"),
           actionButton("submitNewEntry", label = "Submit"),
-          textOutput("submitMessage")
+          span(textOutput("submitMessage"), style="color:red")
         )
       )
     )
