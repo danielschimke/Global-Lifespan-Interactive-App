@@ -10,7 +10,7 @@ con <- dbConnect(drv = RSQLite::SQLite(), dbname = dataAccess)
 lifeData <- dbReadTable(con, "mergedTable")
 
 fixCamelCase <- function(givenString){
-  return(str_to_title(gsub("([[:lower:]])([[:upper:]])", "\\1 \\2", givenString)))
+  return(str_to_title(gsub("(\\D)(\\d)", "\\1 \\2", gsub("([[:lower:]])([[:upper:]])", "\\1 \\2", givenString))))
 }
 
 axisSelect <- colnames(lifeData[,!colnames(lifeData) %in% c("Entity","Code")])

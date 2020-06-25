@@ -121,10 +121,12 @@ ui <- dashboardPage(
           plotOutput("lifeChart"),
           h3(""),
           plotOutput("heatmap"),
+          h3(""),
+          plotOutput("pieChart")
           
         ),
         tabItem(tabName = "newEntry",
-          h3("Add a new entry to the database"),
+          h3("Add a New Entry to the Database"),
           selectInput("newEntity", label = "Entity:", choices = unique(lifeData$Entity)),
           selectInput("newCode", label = "Code:", choices = NULL),
           textInput("newYear", label = "Year:", placeholder = "####"),

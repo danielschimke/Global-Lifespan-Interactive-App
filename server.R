@@ -81,6 +81,14 @@ server <- function(input, output, session) {
       theme(plot.title = element_text(hjust = 0.5), text = element_text(size = 20),)
             #axis.text.x = element_text(angle = 5, hjust = 0.5))
   })
+  
+  output$pieChart <- renderPlot({
+    ggplot(newLifeData() %>% filter(Year == 2010)) +
+      geom_bar(aes(x=Year, y=bananaYields, fill = Entity), stat = "identity") +
+      coord_polar("y", start = 0) +
+      theme_void() + ggtitle("Distribution of Banana Yields in 2010") +
+      theme(plot.title = element_text(hjust = 0.5), text = element_text(size = 20))
+  })
 
   #Checks for valid input to the database
   observeEvent(input$submitNewEntry, {
