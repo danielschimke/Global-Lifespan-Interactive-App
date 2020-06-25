@@ -1,18 +1,5 @@
-library(shiny)
-library(shinydashboard)
-library(datasets)
-library(tidyverse)
-library(ggplot2)
-library(DBI)
 
-#lifeData <- data.frame(read.csv("life-expectancy.csv"))
 
-dataAccess <- "data.db"
-  con <- dbConnect(drv = RSQLite::SQLite(), dbname = dataAccess)
-  lifeData <- dbReadTable(con, "mergedTable")
-  dbDisconnect(con)
-  
-#  df <- lifeData[grep("^A", lifeData$Entity),]
   
 ui <- dashboardPage(
     dashboardHeader(title = "Country Data Analysis"),
@@ -23,13 +10,13 @@ ui <- dashboardPage(
         conditionalPanel(
           condition = "input.sidebar == 'life'",
           style = "position:fixed;width:inherit;",
-          selectInput("changeX", label = "X Axis:", 
-                      choices = colnames(lifeData[,!colnames(lifeData) %in% c("Entity","Code")]), 
+          selectInput("changeX", label = "X Axis:",
+                      choices = axisSelect, 
                       width = 210),
           selectInput("changeY", label = "Y Axis:", 
-                      choices = colnames(lifeData[,!colnames(lifeData) %in% c("Entity","Code")]), 
+                      choices = axisSelect, 
                       width = 210),
-          actionButton("clearEntity", label = "Clear")
+          actionButton("clearEntity", label = "Clear All")
         )
       )
     ),

@@ -1,16 +1,6 @@
-library(shiny)
-library(shinydashboard)
-library(datasets)
-library(tidyverse)
-library(ggplot2)
-
 
 server <- function(input, output, session) {
   
-#  lifeData <- data.frame(read.csv("life-expectancy.csv"))
-  dataAccess <- "data.db"
-  con <- dbConnect(drv = RSQLite::SQLite(), dbname = dataAccess)
-  lifeData <- dbReadTable(con, "mergedTable")
   
   updateNewCode <- reactive({
     codeData <- lifeData
@@ -20,7 +10,7 @@ server <- function(input, output, session) {
   observe({
      updateNewCode()
   })
-
+  
   
   #Update the dataset based on the input
   newLifeData <- reactive({
@@ -73,12 +63,13 @@ server <- function(input, output, session) {
   })
   output$GDPvLifeExpectancy <- renderPlot({
     ggplot(newLifeData()) +
-      geom_line(aes(x=GDPperCapita, y=lifeExpectancy, color=Entity))
+      geom_line(aes(x=gdpPerCapita, y=lifeExpectancy, color=Entity))
   })
   output$inputGraph <- renderPlot({
     ggplot(newLifeData()) +
       geom_line(aes(x=newLifeData()[[input$changeX]], y=newLifeData()[[input$changeY]], color=Entity)) +
-      xlab(input$changeX) + ylab(input$changeY)
+      xlab(names(axisSelect)[match(input$changeX, axisSelect)]) +
+      ylab(names(axisSelect)[match(input$changeY, axisSelect)])
   })
 
   #Checks for valid input to the database
