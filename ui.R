@@ -127,13 +127,35 @@ ui <- dashboardPage(
         ),
         tabItem(tabName = "newEntry",
           h3("Add a New Entry to the Database"),
+          box(
+            width = 5,
+            background = "blue",
+            
           selectInput("newEntity", label = "Entity:", choices = unique(lifeData$Entity)),
-          selectInput("newCode", label = "Code:", choices = NULL),
-          textInput("newYear", label = "Year:", placeholder = "####"),
-          textInput("newExpectancy", label = "Life Expectancy:", placeholder = "Enter a number in years..."),
-          textInput("newChildMortality", label = "Child Mortality Rate:", placeholder = "Ex. 56 for 56%"),
-          actionButton("submitNewEntry", label = "Submit"),
+          fluidRow(
+            box(
+              background = "blue",
+              selectInput("newCode", label = "Code:", choices = NULL),
+            ),
+            box(
+              background = "blue",
+              textInput("newYear", label = "Year:", placeholder = "####"),
+            )
+          ),
+          fluidRow(
+            box(
+              background = "blue",
+              textInput("newExpectancy", label = "Life Expectancy:", placeholder = "in years...")
+            ),
+            box(
+              background = "blue",
+              textInput("newChildMortality", label = "Child Mortality Rate:", placeholder = "Ex. 56 for 56%")
+            )
+          ),
+          actionButton("submitNewEntry", label = "Submit")
+          ),
           span(textOutput("submitMessage"), style="color:red")
+          
         )
       )
     )
